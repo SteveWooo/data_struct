@@ -2,5 +2,5 @@
 #define bTree_h
 
 #include <stdio.h>
-extern void test(void);
+extern void bTree(void);
 #endif /* bTree_h */

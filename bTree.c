@@ -63,19 +63,18 @@ int get_high(BitNode* t){
         return 0;
     }
     
-//    printf("data:%d\n", t->data);
     int left_high = 0;
     int right_high = 0;
     if(t->left != NULL){
-        left_high = get_high(t->left) + 1;
+        left_high = get_high(t->left);
     }
-    if(t->right != NULL){
-        right_high = get_high(t->right) + 1;
-    }
-    int high = 0;
-    high = left_high > right_high ? left_high : right_high;
     
-    return high;
+    if(t->right != NULL){
+        right_high = get_high(t->right);
+    }
+    
+    int high = left_high > right_high ? left_high : right_high;
+    return high + 1;
 }
 
 BitNode* pre = NULL;
@@ -83,17 +82,23 @@ void set_index(BitNode* t){
     if(t == NULL){
         return ;
     }
-    set_index(t->left);
+    if(t->ltag == 0){
+        set_index(t->left);
+    }
     if(t->left == NULL){
         t->ltag = 1;
         t->left = pre;
     }
-    if(pre != NULL && pre->right == NULL){
+    
+    if(pre!=NULL&&pre->right == NULL){
         pre->rtag = 1;
         pre->right = t;
     }
+    
     pre = t;
-    set_index(t->right);
+    if(t->rtag == 0){
+        set_index(t->right);
+    }
 }
 
 void read_index(BitNode* t){
@@ -113,7 +118,7 @@ void read_index(BitNode* t){
     }
 }
 
-void test(){
+void bTree(){
     _index = -1;
     int data[] = {1, 2, 0, 3, 0, 0, 4, 5};
     int length = sizeof(data)/sizeof(int);
@@ -125,9 +130,9 @@ void test(){
 //    LNR_read(t);
 //    printf("LRN:\n");
 //    LRN_read(t);
-//    int high = get_high(t);
-//    printf("max length:%d\n", high);
+    int high = get_high(t);
+    printf("max length:%d\n", high);
 //    pre = t;
-    set_index(t);
-    read_index(t);
+//    set_index(t);
+//    read_index(t);
 }
