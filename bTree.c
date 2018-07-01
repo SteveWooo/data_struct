@@ -59,16 +59,11 @@ void LRN_read(BitNode* t){
 }
 
 int get_high(BitNode* t){
-    if(t == NULL){
-        return 0;
-    }
-    
     int left_high = 0;
     int right_high = 0;
     if(t->left != NULL){
         left_high = get_high(t->left);
     }
-    
     if(t->right != NULL){
         right_high = get_high(t->right);
     }
@@ -82,9 +77,7 @@ void set_index(BitNode* t){
     if(t == NULL){
         return ;
     }
-    if(t->ltag == 0){
-        set_index(t->left);
-    }
+    set_index(t->left);
     if(t->left == NULL){
         t->ltag = 1;
         t->left = pre;
@@ -94,11 +87,8 @@ void set_index(BitNode* t){
         pre->rtag = 1;
         pre->right = t;
     }
-    
     pre = t;
-    if(t->rtag == 0){
-        set_index(t->right);
-    }
+    set_index(t->right);
 }
 
 void read_index(BitNode* t){
@@ -130,9 +120,9 @@ void bTree(){
 //    LNR_read(t);
 //    printf("LRN:\n");
 //    LRN_read(t);
-    int high = get_high(t);
-    printf("max length:%d\n", high);
+//    int high = get_high(t);
+//    printf("max length:%d\n", high);
 //    pre = t;
-//    set_index(t);
-//    read_index(t);
+    set_index(t);
+    read_index(t);
 }
