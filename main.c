@@ -4,6 +4,7 @@
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    bTree();
+//    bTree();
+    bsTree();
     return 0;
 }
