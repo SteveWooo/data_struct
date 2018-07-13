@@ -6,7 +6,7 @@
 int main(int argc, const char * argv[]) {
     // insert code here...
 //    bTree();
-//    printf("start:\n");
+    printf("start:\n");
 //    bsTree();
     map();
     return 0;
