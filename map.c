@@ -243,6 +243,8 @@ int get_next_position(VNode* node, int position){
     return -1;
 }
 
+//拿到第一个节点，然后找这个节点边上的下一个节点，再找这下一个节点边上的其他节点。
+//然后先遍历最后节点的连通节点，再遍历一开始节点的连通节点。
 void DFS(Map* map, int position){
     if(visited[position] == 1){
         return ;
@@ -276,7 +278,7 @@ void initDFS(Map* map){
 
 void map(){
     Map* map = initMap();
-//    initBFS(map);
+    initBFS(map);
     initDFS(map);
 }
 
