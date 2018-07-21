@@ -141,132 +141,191 @@
 //    }
 //}
 
+//typedef struct ArcNode{
+//    int adjvex;
+//    struct ArcNode* next;
+//}ArcNode;
+//
+//typedef struct VNode{
+//    char data;
+//    ArcNode* firstArc;
+//}VNode;
+//
+//typedef struct {
+//    VNode* list;
+//    int vexnum, arcnum;
+//}Map;
+//
+//int getPosition(char data, Map* map){
+//    int i ;
+//    for(i=0;i<map->vexnum;i++){
+//        if(map->list[i].data == data){
+//            return i;
+//        }
+//    }
+//
+//    return -1;
+//}
+//
+//Map* initMap(){
+//    Map* map;
+//    map = (Map*)malloc(sizeof(Map));
+//    char data[] = {'A', 'B', 'C', 'D'};
+//    char arc[][2] = {{'A', 'B'}, {'C', 'D'}, {'A', 'C'}};
+//
+//    map->vexnum = sizeof(data) / sizeof(data[0]);
+//    map->arcnum = sizeof(arc) / sizeof(arc[0]);
+//    map->list = (VNode*)malloc(map->vexnum);
+//
+//    int i;
+//    for(i=0;i<map->vexnum;i++){
+//        VNode node;
+//        node.data = data[i];
+//        node.firstArc = NULL;
+//        map->list[i] = node;
+//    }
+//
+//    for(i=0;i<map->arcnum;i++){
+//        ArcNode* node = (ArcNode*)malloc(sizeof(ArcNode));
+//        int head_position = getPosition(arc[i][1], map);
+//        int tail_position = getPosition(arc[i][0], map);
+//        node->adjvex = head_position;
+//        node->next = map->list[tail_position].firstArc;
+//        map->list[tail_position].firstArc = node;
+//    }
+//
+//    return map;
+//}
+//
+//int* visited;
+//void BFS(Map* map, int position){
+//    if(visited[position] == 1){
+//        return ;
+//    }
+//    visited[position] = 1;
+//
+//    VNode node = map->list[position];
+//    printf("visit:%c\n", node.data);
+//    if(node.firstArc != NULL){
+//
+//        ArcNode* temp;
+//        temp = node.firstArc;
+//        while(temp->next != NULL){
+//            BFS(map, temp->next->adjvex);
+//            temp = temp->next;
+//        }
+//    }
+//}
+//
+////拿到第一个节点，然后找这个节点边上的下一个节点，再找这下一个节点边上的其他节点。
+////然后先遍历最后节点的连通节点，再遍历一开始节点的连通节点。
+//void DFS(Map* map, int position){
+//    if(visited[position] == 1){
+//        return ;
+//    }
+//    visited[position] = 1;
+//    VNode node = map->list[position];
+//    printf("visited:%c\n", node.data);
+//    if(node.firstArc == NULL){
+//        return ;
+//    }
+//
+//    int w = node.firstArc->adjvex;
+//    while(w>=0){
+//        DFS(map, w);
+//        w = get_next_position(&node, w);
+//    }
+//}
+//
+//void initDFS(Map* map){
+//    printf("DFS:\n");
+//    visited = (int*)malloc(sizeof(int) * map->vexnum);
+//    int i;
+//    for(i=0;i<map->vexnum;i++){
+//        visited[i] = 0;
+//    }
+//
+//    for(i=0;i<map->vexnum;i++){
+//        DFS(map, i);
+//    }
+//}
+//char data[] = {'A', 'B', 'C', 'D'};
+//char arc[][2] = {{'A', 'B'}, {'C', 'D'}, {'A', 'C'}};
 typedef struct ArcNode{
     int adjvex;
     struct ArcNode* next;
 }ArcNode;
-
-typedef struct VNode{
+typedef  struct VNode{
     char data;
-    ArcNode* firstArc;
+    ArcNode* first;
 }VNode;
-
-typedef struct {
+typedef struct Map{
     VNode* list;
     int vexnum, arcnum;
 }Map;
 
-int getPosition(char data, Map* map){
-    int i ;
+int get_position(char data, Map* map){
+    int i;
     for(i=0;i<map->vexnum;i++){
-        if(map->list[i].data == data){
+        if(data == map->list[i].data){
             return i;
         }
     }
-    
     return -1;
 }
 
 Map* initMap(){
-    Map* map;
-    map = (Map*)malloc(sizeof(Map));
+    Map* map = (Map*)malloc(sizeof(Map));
     char data[] = {'A', 'B', 'C', 'D'};
     char arc[][2] = {{'A', 'B'}, {'C', 'D'}, {'A', 'C'}};
-    
     map->vexnum = sizeof(data) / sizeof(data[0]);
     map->arcnum = sizeof(arc) / sizeof(arc[0]);
-    map->list = (VNode*)malloc(map->vexnum);
-    
+    map->list = (VNode*)malloc(sizeof(VNode) * map->vexnum);
+    //init list
     int i;
     for(i=0;i<map->vexnum;i++){
         VNode node;
         node.data = data[i];
-        node.firstArc = NULL;
+        node.first = NULL;
         map->list[i] = node;
     }
     
+    //init arc
     for(i=0;i<map->arcnum;i++){
-        ArcNode* node = (ArcNode*)malloc(sizeof(ArcNode));
-        int head_position = getPosition(arc[i][1], map);
-        int tail_position = getPosition(arc[i][0], map);
-        node->adjvex = head_position;
-        node->next = map->list[tail_position].firstArc;
-        map->list[tail_position].firstArc = node;
+        char head = get_position(arc[i][0], map);
+        char tail = get_position(arc[i][1], map);
+        
+        ArcNode* arcnode = (ArcNode*)malloc(sizeof(ArcNode));
+        arcnode->adjvex = tail;
+        arcnode->next = map->list[head].first;
+        map->list[head].first = arcnode;
     }
-    
     return map;
 }
 
 int* visited;
-void BFS(Map* map, int position){
+void DFS(Map* map, int position){
+    //访问过了
     if(visited[position] == 1){
         return ;
     }
     visited[position] = 1;
-    
     VNode node = map->list[position];
     printf("visit:%c\n", node.data);
-    if(node.firstArc != NULL){
-        
-        ArcNode* temp;
-        temp = node.firstArc;
-        while(temp->next != NULL){
-            BFS(map, temp->next->adjvex);
-            temp = temp->next;
-        }
-    }
-}
-
-void initBFS(Map* map){
-    printf("BFS:\n");
-    visited = (int*)malloc(sizeof(int) * map->vexnum);
-    int i;
-    for(i=0;i<map->vexnum;i++){
-        visited[i] = 0;
+    if(node.first == NULL){
+        return ;
     }
     
-    for(i=0;i<map->vexnum;i++){
-        BFS(map, i);
-    }
-}
-
-int get_next_position(VNode* node, int position){
-    ArcNode* temp = node->firstArc;
-    
+    ArcNode* temp = node.first;
     while(temp != NULL){
-        if(temp->adjvex == position){
-            return temp->next == NULL ? -1 : temp->next->adjvex;
-        }
+        DFS(map, temp->adjvex);
         temp = temp->next;
-    }
-    
-    return -1;
-}
-
-//拿到第一个节点，然后找这个节点边上的下一个节点，再找这下一个节点边上的其他节点。
-//然后先遍历最后节点的连通节点，再遍历一开始节点的连通节点。
-void DFS(Map* map, int position){
-    if(visited[position] == 1){
-        return ;
-    }
-    visited[position] = 1;
-    VNode node = map->list[position];
-    printf("visited:%c\n", node.data);
-    if(node.firstArc == NULL){
-        return ;
-    }
-    
-    int w = node.firstArc->adjvex;
-    while(w>=0){
-        DFS(map, w);
-        w = get_next_position(&node, w);
     }
 }
 
 void initDFS(Map* map){
-    printf("DFS:\n");
-    visited = (int*)malloc(sizeof(int) * map->vexnum);
     int i;
+    visited = (int*)malloc(sizeof(int) * map->vexnum);
     for(i=0;i<map->vexnum;i++){
         visited[i] = 0;
     }
@@ -278,7 +337,6 @@ void initDFS(Map* map){
 
 void map(){
     Map* map = initMap();
-    initBFS(map);
     initDFS(map);
 }
 
