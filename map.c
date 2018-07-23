@@ -335,8 +335,40 @@ void initDFS(Map* map){
     }
 }
 
+void BFS(Map* map, int position){
+    if(visited[position] == 1){
+        return ;
+    }
+    visited[position] = 1;
+    VNode node = map->list[position];
+    printf("visit:%c\n", node.data);
+    
+    ArcNode* temp = node.first;
+    while(temp!=NULL){
+        int v = temp->adjvex;
+        if(visited[v] != 1){
+            printf("visit:%c\n", map->list[v].data);
+            visited[v] = 1;
+        }
+        temp = temp->next;
+    }
+}
+
+void initBFS(Map* map){
+    int i;
+    visited = (int*)malloc(sizeof(int) * map->vexnum);
+    for(i=0;i<map->vexnum;i++){
+        visited[i] = 0;
+    }
+    
+    for(i=0;i<map->vexnum;i++){
+        BFS(map, i);
+    }
+}
+
 void map(){
     Map* map = initMap();
-    initDFS(map);
+//    initDFS(map);
+    initBFS(map);
 }
 
